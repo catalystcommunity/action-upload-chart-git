@@ -1,3 +1,10 @@
+# 1.0.0 (2022-03-01)
+
+
+### Bug Fixes
+
+* Initial commit ([#1](https://github.com/catalystsquad/action-upload-chart-git/issues/1)) ([d0162d9](https://github.com/catalystsquad/action-upload-chart-git/commit/d0162d9f10d0d16e072fd8e24c0ecc6b5fb0414b))
+
 # 1.0.0 (2022-02-28)
 
 
