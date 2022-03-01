@@ -1,22 +1,51 @@
-name: 'Hello World' # taken from https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
-description: 'Greet someone'
+name: 'Upload a released helm chart to a git helm charts repository'
+description: 'Extracts a helm chart from a release, adds it to a git helm repository, then reindexes the repository. This action is designed to be run on a release trigger, and to extract a packaged chart in .tgz format from a .tgz file such as chart.tgz.'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  token:
+    description: 'Github token to use, must specify a PAT so that the action can clone the charts repo and push changes to it'
     required: true
-    default: 'World'
-outputs:
-  random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-id }}
+  tag:
+    description: 'Release tag to fetch chart from'
+    required: false
+    default: ${{ github.event.release.tag_name }}
+  release-asset-name:
+    description: 'the asset name containing the chart, must be a tar file'
+    required: false
+    default: 'chart.tgz'
+  chart-repository:
+    description: 'The git repository to upload the chart to'
+    required: false
+    default: ${{ github.repository_owner }}/charts
+  chart-repository-ref:
+    description: 'The git repository ref to push the chart to'
+    required: false
+    default: main
 runs:
   using: "composite"
   steps:
-    - run: echo Hello ${{ inputs.who-to-greet }}.
+    - name: Install Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: v3.7.2
+    - name: Clone charts repository
+      uses: actions/checkout@v2
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.chart-repository }}
+        ref: ${{ inputs.chart-repository-ref }}
+    - name: Fetch release
+      uses: robinraju/release-downloader@v1.3
+      with:
+        repository: ${{ github.repository }}
+        tag: ${{ inputs.tag }}
+        fileName: ${{ inputs.release-asset-name }}
+        token: ${{ inputs.token }}
+    - name: Upload chart and reindex
       shell: bash
-    - id: random-number-generator
-      run: echo "::set-output name=random-id::$(echo $RANDOM)"
-      shell: bash
-    - run: ${{ github.action_path }}/goodbye.sh
-      shell: bash
-
+      run: |
+        tar -zxvf ${{ inputs.release-asset-name }} && rm ${{ inputs.release-asset-name }}
+        helm repo index .
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Automation - Added new helm chart to repository"
