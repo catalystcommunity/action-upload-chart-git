@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/catalystsquad/action-upload-chart-git/compare/v1.0.0...v1.1.0) (2022-06-10)
+
+
+### Features
+
+* allow chart.tgz like old times ([#2](https://github.com/catalystsquad/action-upload-chart-git/issues/2)) ([1427048](https://github.com/catalystsquad/action-upload-chart-git/commit/1427048bb90e66f956dcd86f797879f930747aed))
+
 # 1.0.0 (2022-03-01)
 
 
