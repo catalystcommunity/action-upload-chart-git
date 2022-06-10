@@ -43,7 +43,13 @@ runs:
     - name: Upload chart and reindex
       shell: bash
       run: |
-        tar -zxvf ${{ inputs.release-asset-name }} && rm ${{ inputs.release-asset-name }}
+        if [ ! -f ${{ inputs.release-asset-name }} ]; then
+          echo "The input asset does not exist after downloading from releases"
+          exit 1
+        fi
+        if [[ "${{ inputs.release-asset-name }}" == "chart.tgz" ]]; then
+          tar -zxvf ${{ inputs.release-asset-name }} && rm ${{ inputs.release-asset-name }}
+        fi
         helm repo index .
     - name: Commit changes
       uses: stefanzweifel/git-auto-commit-action@v4
