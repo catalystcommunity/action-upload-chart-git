@@ -23,9 +23,11 @@ Extracts a helm chart from a release, adds it to a git helm repository, then rei
     # Default: ${{ github.event.release.tag_name }}
     tag: ""
 
-    # the asset name containing the chart, must be a tar file
-    # Default: chart.tgz
-    release-asset-name: ""
+    # Release asset label to scan for. Release assets are scanned by lower casing the
+    # label and using a jq contains() check. The default value is `helm chart`, if
+    # your release assets are labeled differently, specify your label here
+    # Default: helm chart
+    release-asset-label-contains: ""
 
     # The git repository to upload the chart to
     # Default: ${{ github.repository_owner }}/charts
@@ -39,13 +41,13 @@ Extracts a helm chart from a release, adds it to a git helm repository, then rei
 <!-- end usage -->
 <!-- start inputs -->
 
-| **Input**                  | **Description**                                                                                             |               **Default**               | **Required** |
-| :------------------------- | :---------------------------------------------------------------------------------------------------------- | :-------------------------------------: | :----------: |
-| **`token`**                | Github token to use, must specify a PAT so that the action can clone the charts repo and push changes to it |                                         |   **true**   |
-| **`tag`**                  | Release tag to fetch chart from                                                                             | `${{ github.event.release.tag_name }}`  |  **false**   |
-| **`release-asset-name`**   | the asset name containing the chart, must be a tar file                                                     |               `chart.tgz`               |  **false**   |
-| **`chart-repository`**     | The git repository to upload the chart to                                                                   | `${{ github.repository_owner }}/charts` |  **false**   |
-| **`chart-repository-ref`** | The git repository ref to push the chart to                                                                 |                 `main`                  |  **false**   |
+| **Input**                          | **Description**                                                                                                                                                                                                                   |               **Default**               | **Required** |
+| :--------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------: | :----------: |
+| **`token`**                        | Github token to use, must specify a PAT so that the action can clone the charts repo and push changes to it                                                                                                                       |                                         |   **true**   |
+| **`tag`**                          | Release tag to fetch chart from                                                                                                                                                                                                   | `${{ github.event.release.tag_name }}`  |  **false**   |
+| **`release-asset-label-contains`** | Release asset label to scan for. Release assets are scanned by lower casing the label and using a jq contains() check. The default value is `helm chart`, if your release assets are labeled differently, specify your label here |              `helm chart`               |  **false**   |
+| **`chart-repository`**             | The git repository to upload the chart to                                                                                                                                                                                         | `${{ github.repository_owner }}/charts` |  **false**   |
+| **`chart-repository-ref`**         | The git repository ref to push the chart to                                                                                                                                                                                       |                 `main`                  |  **false**   |
 
 <!-- end inputs -->
 <!-- start outputs -->
