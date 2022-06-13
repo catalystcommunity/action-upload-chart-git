@@ -27,7 +27,7 @@ runs:
       uses: stefanprodan/kube-tools@v1
       with:
         command: |
-          echo '${{github.event.release.assets}} | jq '.'
+          echo '${{github.event.release.assets}} | jq '.[]'
     - name: Scan for asset name from release
       uses: sergeysova/jq-action@v2
       id: assetName
