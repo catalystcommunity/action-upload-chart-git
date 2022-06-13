@@ -8,10 +8,10 @@ inputs:
     description: 'Release tag to fetch chart from'
     required: false
     default: ${{ github.event.release.tag_name }}
-  release-asset-name:
-    description: 'the asset name containing the chart, must be a tar file'
+  release-asset-label-contains:
+    description: 'Release asset label to scan for. Release assets are scanned by lower casing the label and using a jq contains() check. The default value is `helm chart`, if your release assets are labeled differently, specify your label here'
     required: false
-    default: 'chart.tgz'
+    default: 'helm chart'
   chart-repository:
     description: 'The git repository to upload the chart to'
     required: false
@@ -23,6 +23,20 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Scan for asset name from release based on asset labels
+      uses: sergeysova/jq-action@v2
+      id: assetName
+      with:
+        cmd: |
+          jq -r '.[] | select(.label | ascii_downcase | contains("helm chart")) | .name' <<<'${{toJSON(github.event.release.assets)}}'
+    - name: Verify asset name
+      shell: bash
+      run: |
+        echo "asset name is  ${{ steps.assetName.outputs.value }}"
+        if [ -z ${{ steps.assetName.outputs.value }} ]; then
+          echo "Failed to find a release asset matching the configured label"
+          exit 1
+        fi
     - name: Install Helm
       uses: azure/setup-helm@v1
       with:
@@ -38,18 +52,11 @@ runs:
       with:
         repository: ${{ github.repository }}
         tag: ${{ inputs.tag }}
-        fileName: ${{ inputs.release-asset-name }}
+        fileName: ${{ steps.assetName.outputs.value }}
         token: ${{ inputs.token }}
-    - name: Upload chart and reindex
+    - name: Reindex to include downloaded chart
       shell: bash
       run: |
-        if [ ! -f ${{ inputs.release-asset-name }} ]; then
-          echo "The input asset does not exist after downloading from releases"
-          exit 1
-        fi
-        if [[ "${{ inputs.release-asset-name }}" == "chart.tgz" ]]; then
-          tar -zxvf ${{ inputs.release-asset-name }} && rm ${{ inputs.release-asset-name }}
-        fi
         helm repo index .
     - name: Commit changes
       uses: stefanzweifel/git-auto-commit-action@v4
