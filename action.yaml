@@ -60,7 +60,7 @@ runs:
       shell: bash
       run: |
         helm repo index .
-        git status
+        git diff
 #    - name: Commit changes
 #      uses: stefanzweifel/git-auto-commit-action@v4
 #      with:
