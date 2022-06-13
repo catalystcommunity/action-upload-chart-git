@@ -43,14 +43,15 @@ runs:
     - name: Upload chart and reindex
       shell: bash
       run: |
-        assetName=$(echo $GITHUB_CONTEXT | jq -c '.event.release.assets[] | select(.label | ascii_downcase | contains("${inputs.release-asset-label-contains}")) | .name')
+        echo $GITHUB_CONTEXT | jq -c '.event.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name'
+        assetName=$(echo $GITHUB_CONTEXT | jq -c '.event.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name')
         echo "asset name is $assetName"
         if [ ! -f $assetName ]; then
           echo "Failed to find a release asset matching the configured label"
           exit 1
         fi
         tar -zxvf $assetName && rm $assetName
-        ls -l
+        ls -l $assetName
 #        helm repo index .
 #    - name: Commit changes
 #      uses: stefanzweifel/git-auto-commit-action@v4
