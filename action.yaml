@@ -59,6 +59,7 @@ runs:
     - name: Upload chart and reindex
       shell: bash
       run: |
+        ls -l
         tar -zxvf ${{ steps.assetName.outputs.value }} && rm ${{ steps.assetName.outputs.value }}
         ls -l ${{ steps.assetName.outputs.value }}
 #        helm repo index .
