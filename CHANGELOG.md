@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/catalystsquad/action-upload-chart-git/compare/v1.1.0...v1.1.1) (2022-06-13)
+
+
+### Bug Fixes
+
+* Scan release asset labels to discover helm chart ([#3](https://github.com/catalystsquad/action-upload-chart-git/issues/3)) ([b73707e](https://github.com/catalystsquad/action-upload-chart-git/commit/b73707ec7774d7fe0c20c4b7c5088f07a58976d4))
+
 # [1.1.0](https://github.com/catalystsquad/action-upload-chart-git/compare/v1.0.0...v1.1.0) (2022-06-10)
 
 
