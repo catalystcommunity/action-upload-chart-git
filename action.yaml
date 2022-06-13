@@ -28,7 +28,8 @@ runs:
       id: assetName
       with:
         cmd: |
-          jq '. | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name' <<<${{toJSON(github.event.release.assets)}}
+          jq '.' <<<${{toJSON(github.event.release.assets)}}
+#          jq '. | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name' <<<${{toJSON(github.event.release.assets)}}
     - name: Verify asset name
       shell: bash
       run: |
