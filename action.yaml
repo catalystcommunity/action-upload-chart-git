@@ -23,6 +23,20 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Scan for asset name from release
+      uses: sergeysova/jq-action@v2
+      id: assetName
+      with:
+        cmd: |
+          jq '.[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name' <<<${{toJSON(github.event.release.assets)}}
+    - name: Verify asset name
+      shell: bash
+      run: |
+        echo "asset name is  ${{ steps.assetName.outputs.value }}"
+        if [ -z ${{ steps.assetName.outputs.value }} ]; then
+          echo "Failed to find a release asset matching the configured label"
+          exit 1
+        fi
     - name: Install Helm
       uses: azure/setup-helm@v1
       with:
@@ -40,35 +54,11 @@ runs:
         tag: ${{ inputs.tag }}
         fileName: ${{ inputs.release-asset-name }}
         token: ${{ inputs.token }}
-    - name: Test jq
-      uses: sergeysova/jq-action@v2
-      id: event
-      with:
-        cmd: |
-          jq '.' <<<${{toJSON(github.event.release.assets)}}
-    - name: Show event
-      shell: bash
-      run: |
-        echo "event  is  ${{ steps.event.outputs.value }}"
-    - name: Extract version from package.json
-      uses: sergeysova/jq-action@v2
-      id: assetName
-      with:
-        cmd: |
-          jq '.[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name' <<<${{toJSON(github.event.release.assets)}}
-    - name: Show assetName
-      shell: bash
-      run: |
-        echo "asset name is  ${{ steps.assetName.outputs.value }}"
-        if [ -z ${{ steps.assetName.outputs.value }}" ]; then
-          echo "Failed to find a release asset matching the configured label"
-          exit 1
-        fi
     - name: Upload chart and reindex
       shell: bash
       run: |
         tar -zxvf ${{ steps.assetName.outputs.value }} && rm ${{ steps.assetName.outputs.value }}
-        ls -l $assetName
+        ls -l ${{ steps.assetName.outputs.value }}
 #        helm repo index .
 #    - name: Commit changes
 #      uses: stefanzweifel/git-auto-commit-action@v4
