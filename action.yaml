@@ -23,14 +23,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-#        assetName=$(jq '.[] | select(.label | ascii_downcase | contains("helm chart")) | .name' <<<'${{toJSON(github.event.release.assets)}}')
-    - name: Scan for asset name from release
+    - name: Scan for asset name from release based on asset labels
       uses: sergeysova/jq-action@v2
       id: assetName
       with:
         cmd: |
-          jq -r '.[0].name' <<<'${{toJSON(github.event.release.assets)}}'
-#          jq -r '.[] | select(.label | ascii_downcase | contains("helm chart")) | .name' <<<'${{toJSON(github.event.release.assets)}}'
+          jq -r '.[] | select(.label | ascii_downcase | contains("helm chart")) | .name' <<<'${{toJSON(github.event.release.assets)}}'
     - name: Verify asset name
       shell: bash
       run: |
@@ -56,12 +54,11 @@ runs:
         tag: ${{ inputs.tag }}
         fileName: ${{ steps.assetName.outputs.value }}
         token: ${{ inputs.token }}
-    - name: Upload chart and reindex
+    - name: Reindex to include downloaded chart
       shell: bash
       run: |
         helm repo index .
-        git diff
-#    - name: Commit changes
-#      uses: stefanzweifel/git-auto-commit-action@v4
-#      with:
-#        commit_message: "Automation - Added new helm chart to repository"
+    - name: Commit changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Automation - Added new helm chart to repository"
