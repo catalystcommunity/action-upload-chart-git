@@ -40,6 +40,16 @@ runs:
         tag: ${{ inputs.tag }}
         fileName: ${{ inputs.release-asset-name }}
         token: ${{ inputs.token }}
+    - name: Test jq
+      uses: sergeysova/jq-action@v2
+      id: event
+      with:
+        cmd: |
+          jq '.event' <<<$GITHUB_CONTEXT
+    - name: Show event
+      shell: bash
+      run: |
+        echo "event  is  ${{ steps.event.outputs.value }}"
     - name: Extract version from package.json
       uses: sergeysova/jq-action@v2
       id: assetName
