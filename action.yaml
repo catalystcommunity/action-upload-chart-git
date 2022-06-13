@@ -45,7 +45,7 @@ runs:
       id: assetName
       with:
         cmd: |
-          jq -r --arg var "$EVENT" '.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name' <<< '${{github.event}}'
+          jq '.event.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name' <<<$GITHUB_CONTEXT
     - name: Show assetName
       shell: bash
       run: |
