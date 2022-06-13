@@ -43,8 +43,8 @@ runs:
     - name: Upload chart and reindex
       shell: bash
       run: |
-        echo ${{github.event}} | jq -c '.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name'
-        assetName=$(echo ${{github.event}} | jq -c '.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name')
+        echo '${{github.event}}' | jq -c '.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name'
+        assetName=$(echo '${{github.event}}' | jq -c '.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name')
         echo "asset name is $assetName"
         if [ -z "$assetName" ]; then
           echo "Failed to find a release asset matching the configured label"
