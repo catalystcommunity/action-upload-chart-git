@@ -45,7 +45,7 @@ runs:
       id: event
       with:
         cmd: |
-          jq '.' <<<${{github}}
+          jq '.' <<<${{toJSON(github)}}
     - name: Show event
       shell: bash
       run: |
