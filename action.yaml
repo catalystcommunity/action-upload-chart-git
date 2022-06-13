@@ -59,9 +59,10 @@ runs:
     - name: Upload chart and reindex
       shell: bash
       run: |
-        tar -zxvf ${{ steps.assetName.outputs.value }}
-        ls -l
-#        helm repo index .
+#        tar -zxvf ${{ steps.assetName.outputs.value }}
+#        ls -l
+        helm repo index .
+        git status
 #    - name: Commit changes
 #      uses: stefanzweifel/git-auto-commit-action@v4
 #      with:
