@@ -54,13 +54,14 @@ runs:
       with:
         repository: ${{ github.repository }}
         tag: ${{ inputs.tag }}
-        fileName: ${{ steps.assetName.outputs.value }}
+        fileName: "*"
+        out-file-path: "release-chart"
         token: ${{ inputs.token }}
     - name: Upload chart and reindex
       shell: bash
       run: |
-        ls -l
-        tar -zxvf ${{ steps.assetName.outputs.value }} && rm ${{ steps.assetName.outputs.value }}
+        ls -l $GITHUB_WORKSPACE/release-chart
+        tar -zxvf $GITHUB_WORKSPACE/release-chart/${{ steps.assetName.outputs.value }}
         ls -l ${{ steps.assetName.outputs.value }}
 #        helm repo index .
 #    - name: Commit changes
