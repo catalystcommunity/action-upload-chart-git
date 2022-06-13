@@ -54,15 +54,13 @@ runs:
       with:
         repository: ${{ github.repository }}
         tag: ${{ inputs.tag }}
-        fileName: "*"
-        out-file-path: "release-chart"
+        fileName: ${{ steps.assetName.outputs.value }}
         token: ${{ inputs.token }}
     - name: Upload chart and reindex
       shell: bash
       run: |
-        ls -l $GITHUB_WORKSPACE/release-chart
-        tar -zxvf $GITHUB_WORKSPACE/release-chart/${{ steps.assetName.outputs.value }}
-        ls -l ${{ steps.assetName.outputs.value }}
+        tar -zxvf ${{ steps.assetName.outputs.value }}
+        ls -l
 #        helm repo index .
 #    - name: Commit changes
 #      uses: stefanzweifel/git-auto-commit-action@v4
