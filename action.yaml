@@ -30,9 +30,10 @@ runs:
     - name: Scan for asset name from release
       shell: bash
       run: |
-        echo '${{github.event.release.assets}} | jq '. | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name'
-        assetName=$(echo '${{github.event.release.assets}} | jq '. | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name')
-        echo "asset name is $assetName"
+        echo '${{github.event.release.assets}} | jq '.'
+#        echo '${{github.event.release.assets}} | jq '. | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name'
+#        assetName=$(echo '${{github.event.release.assets}} | jq '. | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name')
+#        echo "asset name is $assetName"
     - name: Scan for asset name from release
       uses: sergeysova/jq-action@v2
       id: assetName
