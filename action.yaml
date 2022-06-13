@@ -40,17 +40,24 @@ runs:
         tag: ${{ inputs.tag }}
         fileName: ${{ inputs.release-asset-name }}
         token: ${{ inputs.token }}
-    - name: Upload chart and reindex
+    - name: Extract version from package.json
+      uses: sergeysova/jq-action@v2
+      id: assetName
+      with:
+        cmd: |
+          ${{github.event}} | jq -c '.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name'
+    - name: Show assetName
       shell: bash
       run: |
-        ${{github.event}} | jq -c '.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name'
-        assetName=$(${{github.event}} | jq -c '.release.assets[] | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name')
-        echo "asset name is $assetName"
-        if [ -z "$assetName" ]; then
+        echo "asset name is  ${{ steps.assetName.outputs.value }}"
+        if [ -z ${{ steps.assetName.outputs.value }}" ]; then
           echo "Failed to find a release asset matching the configured label"
           exit 1
         fi
-        tar -zxvf $assetName && rm $assetName
+    - name: Upload chart and reindex
+      shell: bash
+      run: |
+        tar -zxvf ${{ steps.assetName.outputs.value }} && rm ${{ steps.assetName.outputs.value }}
         ls -l $assetName
 #        helm repo index .
 #    - name: Commit changes
