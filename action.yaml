@@ -23,31 +23,21 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install jq
-      uses: awalsh128/cache-apt-pkgs-action@v1
-      with:
-        packages: jq
+#        assetName=$(jq '.[] | select(.label | ascii_downcase | contains("helm chart")) | .name' <<<'${{toJSON(github.event.release.assets)}}')
     - name: Scan for asset name from release
+      uses: sergeysova/jq-action@v2
+      id: assetName
+      with:
+        cmd: |
+          jq '.[0].name' <<<'${{toJSON(github.event.release.assets)}}'
+    - name: Verify asset name
       shell: bash
       run: |
-        assetName=$(jq '.[0].name' <<<'${{toJSON(github.event.release.assets)}}')
-        echo "assetName is $assetName"
-#        assetName=$(jq '.[] | select(.label | ascii_downcase | contains("helm chart")) | .name' <<<'${{toJSON(github.event.release.assets)}}')
-#    - name: Scan for asset name from release
-#      uses: sergeysova/jq-action@v2
-#      id: assetName
-#      with:
-#        cmd: |
-#          jq '.' <<<'${{toJSON(github.event.release.assets)}}'
-#          jq '. | select(.label | ascii_downcase | contains("${{inputs.release-asset-label-contains}}")) | .name' <<<${{toJSON(github.event.release.assets)}}
-#    - name: Verify asset name
-#      shell: bash
-#      run: |
-#        echo "asset name is  ${{ steps.assetName.outputs.value }}"
-#        if [ -z ${{ steps.assetName.outputs.value }} ]; then
-#          echo "Failed to find a release asset matching the configured label"
-#          exit 1
-#        fi
+        echo "asset name is  ${{ steps.assetName.outputs.value }}"
+        if [ -z ${{ steps.assetName.outputs.value }} ]; then
+          echo "Failed to find a release asset matching the configured label"
+          exit 1
+        fi
 #    - name: Install Helm
 #      uses: azure/setup-helm@v1
 #      with:
