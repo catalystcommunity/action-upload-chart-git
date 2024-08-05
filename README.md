@@ -13,7 +13,7 @@ Extracts a helm chart from a release, adds it to a git helm repository, then rei
 <!-- start usage -->
 
 ```yaml
-- uses: catalystsquad/action-upload-chart-git@undefined
+- uses: catalystcommunity/action-upload-chart-git@undefined
   with:
     # Github token to use, must specify a PAT so that the action can clone the charts
     # repo and push changes to it
@@ -74,7 +74,7 @@ jobs:
       - name: Dump Context
         uses: crazy-max/ghaction-dump-context@v1
       - name: Push Chart
-        uses: catalystsquad/action-upload-chart-git@v1
+        uses: catalystcommunity/action-upload-chart-git@v1
         with:
           token: ${{ secrets.AUTOMATION_PAT }}
 ```
