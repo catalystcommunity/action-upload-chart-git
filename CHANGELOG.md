@@ -1,3 +1,12 @@
+## [1.1.2](https://github.com/catalystcommunity/action-upload-chart-git/compare/v1.1.1...v1.1.2) (2025-01-24)
+
+
+### Bug Fixes
+
+* move to catalystcommunity ([8559285](https://github.com/catalystcommunity/action-upload-chart-git/commit/8559285b4e6b677b3df5f8d4fc9412fe4e43f9ac))
+* move to catalystcommunity ([2f15e88](https://github.com/catalystcommunity/action-upload-chart-git/commit/2f15e882023d21fd2b0d75d086a5eff0491faf99))
+* use the release-asset-label-contains input ([#5](https://github.com/catalystcommunity/action-upload-chart-git/issues/5)) ([065da28](https://github.com/catalystcommunity/action-upload-chart-git/commit/065da28518b4546d983b8b143eb68d5dc4663874))
+
 ## [1.1.1](https://github.com/catalystcommunity/action-upload-chart-git/compare/v1.1.0...v1.1.1) (2022-06-13)
 
 
